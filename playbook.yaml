@@ -1,0 +1,35 @@
+---
+- name: Simple Playbook
+  hosts: local
+  become: yes
+
+  tasks:
+    - name: Ensure Nginx is installed
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+
+    - name: Validate Nginx configuration
+      command: nginx -t
+      ignore_errors: yes
+      register: nginx_test
+
+    - name: Debug Nginx configuration test
+      debug:
+        var: nginx_test
+
+    - name: Ensure Nginx is running
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+      when: nginx_test.rc == 0
+
+    - name: Copy index.html to the web server
+      copy:
+        src: /home/jyldyz/ansible/index.html
+        dest: /var/www/html/index.html
+        owner: www-data
+        group: www-data
+        mode: '0644'
