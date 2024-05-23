@@ -28,7 +28,7 @@
 
     - name: Copy index.html to the web server
       copy:
-        src: /home/jyldyz/ansible/index.html
+        src: ./index.html
         dest: /var/www/html/index.html
         owner: www-data
         group: www-data
